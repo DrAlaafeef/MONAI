@@ -41,8 +41,8 @@ doQuickTests=false
 doNetTests=false
 doDryRun=false
 doZooTests=false
-doUnitTests=true
-doGeodisTests=false
+doUnitTests=false
+doGeodisTests=true
 
 doBlackFormat=false
 doBlackFix=false
@@ -126,7 +126,7 @@ function compile_cpp {
     ${cmdPrefix}${PY_EXE} setup.py develop --user --uninstall
     if [[ "$OSTYPE" == "darwin"* ]];
     then  # clang for mac os
-        CC=clang CXX=clang++ LDSHARED=ld ${cmdPrefix}${PY_EXE} setup.py develop --user
+        CC=clang CXX=clang++ ${cmdPrefix}${PY_EXE} setup.py develop --user
     else
         ${cmdPrefix}${PY_EXE} setup.py develop --user
     fi
@@ -497,6 +497,9 @@ if [ $doGeodisTests = true ]
 then
     echo "${separator}${blue}GeodisTk${noColor}"
     export GEODISTEST=True
+    echo "${separator}${blue}geodistests${noColor}"
+    torch_validate
+    ${cmdPrefix}${cmd} ./tests/runner-geodis.py
 fi
 
 # set command and clear previous coverage data

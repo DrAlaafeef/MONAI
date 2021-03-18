@@ -22,11 +22,20 @@ import versioneer
 
 # TODO: debug mode -g -O0, compile test cases
 
+# For yoshi env only
+# os.environ['CC']="clang"
+# os.environ['CXX']="clang"
+# os.environ["LDSHARED"]="ld"
+
+
 RUN_BUILD = os.getenv("BUILD_MONAI", "0") == "1"
 FORCE_CUDA = os.getenv("FORCE_CUDA", "0") == "1"  # flag ignored if BUILD_MONAI is False
 
-BUILD_CPP = BUILD_CUDA = False
+BUILD_CPP = True
+BUILD_CUDA = False
 TORCH_VERSION = 0
+BUILD_MONAI_CPP = True
+
 try:
     import torch
 
@@ -81,11 +90,17 @@ def omp_flags():
         return []
     return ["-fopenmp"]
 
+# Added 3/18/2021
+def get_numpy_cpp_include_path():
+    import numpy
+    import re
+    path = re.sub('/_*init_*.py', '/core/include', numpy.__file__)
+    return path
 
 def get_extensions():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     ext_dir = os.path.join(this_dir, "monai", "csrc")
-    include_dirs = [ext_dir]
+    include_dirs = [ext_dir, get_numpy_cpp_include_path()]
 
     source_cpu = glob.glob(os.path.join(ext_dir, "**", "*.cpp"), recursive=True)
     source_cuda = glob.glob(os.path.join(ext_dir, "**", "*.cu"), recursive=True)
