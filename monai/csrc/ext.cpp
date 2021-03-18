@@ -10,13 +10,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 #include <torch/extension.h>
 
 #include "filtering/filtering.h"
 #include "lltm/lltm.h"
 #include "resample/pushpull.h"
 #include "utils/resample_utils.h"
+#include "GeodisTK/geodistk.h"
+
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   // filtering
@@ -66,4 +67,11 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("grid_count_backward", &monai::grid_count_backward, "GridCount backward");
   m.def("grid_grad", &monai::grid_grad, "GridGrad");
   m.def("grid_grad_backward", &monai::grid_grad_backward, "GridGrad backward");
+
+  // GeodisTK
+  m.def("geodesic3d_fast_marching", &geodesic3d_fast_marching_torch);
+  m.def("geodesic2d_fast_marching", &geodesic2d_fast_marching_torch);
+  m.def("geodesic3d_raster_scan", &geodesic3d_raster_scan_torch);
+  m.def("geodesic2d_raster_scan", &geodesic2d_raster_scan_torch);
+
 }
